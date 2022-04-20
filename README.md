@@ -1,4 +1,4 @@
-
+# Power Supply E3648A
 1. pip install pyvisa pyvisa-py pyserial
 2. pip list
 ```
@@ -19,3 +19,13 @@ typing_extensions 4.1.1
 psu = rm.open_resource("ASRL/dev/ttyS13::INSTR")
 ```
 with the corresponding COM port in your PC. In this case, the USB to Serial port is COM14 on windows PC, which translates to /dev/ttyS13 in Cygwin (start from ttyS0)
+
+# Arduino
+arduino.sh is using arduino-cli to run the sketch. The sketch is to ground 2 analog input line (14 and 15) for 8 seconds. Somehow, the filename-instrument.ino has to match the directory name, which in this case is instrument. With this setup, the arduino-cli compile and upload does not even need the .ino file name
+
+# Both
+To tie them together, run the following
+```
+./psu.py && ./arduino.sh
+```
+which basically will toggle the Power supply E3648A, and then run the arduino
