@@ -1,0 +1,1 @@
+./psu.py && ./arduino.sh
