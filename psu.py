@@ -29,7 +29,7 @@ state = psu.query("OUTPUT:STATE?")
 print(state)
 # time.sleep(1)
 psu.write("INSTRUMENT:SELECT OUTPUT1")
-psu.write("Apply 3.85,0.5")
+psu.write("Apply 3.85,1.5")
 
 if int(state) == 0:
     print("ON")

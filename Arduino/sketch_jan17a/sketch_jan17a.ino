@@ -6,13 +6,13 @@ https://electropeak.com/learn/
 */
 #include <LiquidCrystal.h>
 //LCD pin to Arduino
-const int pin_RS = 8;
-const int pin_EN = 9;
-const int pin_d4 = 4;
-const int pin_d5 = 5;
-const int pin_d6 = 6;
-const int pin_d7 = 7;
-const int pin_BL = 10;
+const int pin_RS = 8; 
+const int pin_EN = 9; 
+const int pin_d4 = 4; 
+const int pin_d5 = 5; 
+const int pin_d6 = 6; 
+const int pin_d7 = 7; 
+const int pin_BL = 10; 
 LiquidCrystal lcd( pin_RS,  pin_EN,  pin_d4,  pin_d5,  pin_d6,  pin_d7);
 
 const int pin_PWR = A8;
@@ -50,7 +50,7 @@ void loop() {
    digitalWrite(pin_MAG_INT, LOW);
    pinMode(pin_MAG, OUTPUT);
    pinMode(pin_MAG_INT, OUTPUT);
-
+   
    for(int i=8; i > 0; i--)
    {
       lcd.setCursor(10,1);
@@ -75,7 +75,7 @@ void loop() {
  else if (x < 400){
    lcd.print ("Down  ");
 //   digitalWrite(53, LOW);       // sets the digital pin 13 on
-//   delay(500);
+//   delay(500);   
  }
  else if (x < 600){
    lcd.print ("Left  ");
@@ -88,7 +88,7 @@ void loop() {
    digitalWrite(pin_MAG_INT, LOW);
    pinMode(pin_MAG, OUTPUT);
    pinMode(pin_MAG_INT, OUTPUT);
-
+   
    for(int i=1; i > 0; i--)
    {
       lcd.setCursor(10,1);
@@ -107,7 +107,7 @@ void loop() {
  else if (x < 800){
    lcd.print ("Select");
 
-   // 3.85V =
+   // 3.85V = 
    analogWrite(pin_PWR, 128);
  }
-}
+} 

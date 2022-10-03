@@ -1,2 +1,3 @@
-bash.exe -c C:/projects/instrument/arduino.sh
+echo %cd%
+bash.exe -c ./arduino.sh
 PAUSE
