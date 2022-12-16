@@ -3,10 +3,14 @@ import pyvisa
 import time
 import sys
 
+# visa.log_to_screen()
 rm = pyvisa.ResourceManager('@py')
+# rm = visa.ResourceManager('C:\Program Files\IVI Foundation\IVI\Lib_x64\msc')
+print(rm)
 res = rm.list_resources()
 print("Found following resources: ")
 print(res)
+
 # print("Opening " + res[-1])
 psu = rm.open_resource("ASRL/dev/ttyS13::INSTR")
 
@@ -22,7 +26,7 @@ psu.timeout = 2500 # timeout 2.5s
     # psu.write("SYSTEM:BEEPER:IMMEDIATE")
 
 # QUERY to make sure instrument exist
-# print(psu.query('*IDN?'))
+print(psu.query('*IDN?'))
 
 state = psu.query("OUTPUT:STATE?")
 

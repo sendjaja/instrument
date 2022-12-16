@@ -13,7 +13,7 @@ time \
 upload \
 -p COM7 \
 --fqbn arduino:avr:mega \
-C:/projects/instrument/Arduino/sketch_jan17a/sketch_jan17a.ino
+Arduino.ino
 
 # It takes roughly ~1 seconds to run above command.
 # Adjust as needed the sleep # below
