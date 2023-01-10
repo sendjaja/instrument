@@ -1,1 +1,3 @@
 __pycache__/*
+# Not including KIOL-850C10.zip since it's ~500MB
+*.zip

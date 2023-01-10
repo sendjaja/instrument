@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import pyvisa
 import time
+import sys
 
 # pyvisa.log_to_screen()
 rm = pyvisa.ResourceManager('C:\\windows\\system32\\visa32.dll')
@@ -27,36 +28,47 @@ items = str.split('::')
 # psu = rm.open_resource('USB0::0x05E6::0x2280::4484051::INSTR')
 psu = rm.open_resource('USB0::0x05E6::0x2280::' + items[3] +'::INSTR')
 
-# print(psu.query("OUTPUT:STATE?"), end="\r")
-psu.write(":OUTP OFF")
-psu.write(":VOLT 12")
-psu.write(":CURR 1")
-# psu.write(":OUTP:DEL:STAT ON")
+state = psu.query("OUTPUT:STATE?")
 
-# Work too, but will not show on PSU front panel
-# when output is still on. Might mislead user.
-# Thus use time.sleep instead
-#psu.write(":OUTP:DEL:FALL 8")
+magnet = 0
 
-psu.write(":OUTP:DEL:FALL 0")
-psu.write(":OUTP ON")
-print("Magnet ON")
-# print(psu.query("OUTPUT:STATE?"), end="\r")
+if magnet == 1:
+    psu.write(":OUTP OFF")
+    psu.write(":VOLT 12")
+    psu.write(":CURR 1")
 
-i = 10
+    # Work too, but will not show on PSU front panel
+    # when output is still on. Might mislead user.
+    # Thus use time.sleep instead
+    #psu.write(":OUTP:DEL:FALL 8")
 
-while True:
-    print(i, end="\r")
+    psu.write(":OUTP:DEL:FALL 0")
+    psu.write(":OUTP ON")
+    print("Magnet ON")
 
-    if i == 0:
-        break
-    i = i - 1
-    time.sleep(1)
-    print("  ", end="\r")
+    i = 10
 
-# time.sleep(10)
+    while True:
+        print(i, end="\r")
 
-psu.write(":OUTP OFF")
+        if i == 0:
+            break
+        i = i - 1
+        time.sleep(1)
+        print("  ", end="\r")
 
-print("Magnet OFF")
-# print(psu.query("OUTPUT:STATE?"))
+    psu.write(":OUTP OFF")
+
+    print("Magnet OFF")
+else:
+    psu.write(":OUTP OFF")
+    psu.write(":VOLT 4")
+    psu.write(":CURR 1")
+    if int(state) == 0:
+        print("ON")
+        psu.write("OUTPUT ON")
+    else:
+        print("OFF")
+        psu.write("OUTPUT OFF")
+
+    sys.exit(0)
