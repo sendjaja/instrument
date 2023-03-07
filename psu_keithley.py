@@ -62,7 +62,7 @@ if magnet == 1:
     print("Magnet OFF")
 else:
     psu.write(":OUTP OFF")
-    psu.write(":VOLT 4")
+    psu.write(":VOLT 4.0")
     psu.write(":CURR 1")
     if int(state) == 0:
         print("ON")
