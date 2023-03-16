@@ -2,6 +2,7 @@
 import pyvisa
 import time
 import sys
+from datetime import datetime
 
 # pyvisa.log_to_screen()
 rm = pyvisa.ResourceManager('C:\\windows\\system32\\visa32.dll')
@@ -62,8 +63,15 @@ if magnet == 1:
     print("Magnet OFF")
 else:
     psu.write(":OUTP OFF")
+
+    psu.write(":DISP:BRIG 50")
     psu.write(":VOLT 4.0")
     psu.write(":CURR 1")
+    now = datetime.now()
+    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+    print(dt_string)
+    psu.write(":DISP:USER:TEXT '" + dt_string + "'")
+
     if int(state) == 0:
         print("ON")
         psu.write("OUTPUT ON")
