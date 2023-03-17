@@ -68,7 +68,7 @@ else:
     psu.write(":VOLT 4.0")
     psu.write(":CURR 1")
     now = datetime.now()
-    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+    dt_string = now.strftime("%m/%d/%Y %H:%M:%S")
     print(dt_string)
     psu.write(":DISP:USER:TEXT '" + dt_string + "'")
 
