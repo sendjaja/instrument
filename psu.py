@@ -4,10 +4,11 @@ import time
 import sys
 import random
 import signal
+from datetime import datetime
 
 #default
 magnet_delay = 0
-run_number = -1
+run_number = 3600
 
 def signal_handler(sig, frame):
     print("Ctrl+C is pressed, turning off PSU")
@@ -39,56 +40,41 @@ def psu_press_then_wait():
     i = magnet_delay
 
     psu.write(":OUTP ON")
-    print("Magnet ON")
 
-    while run_number == -1:
+    while True:
         print(i, end="\r")
 
         if i == 0:
             break
         i = i - 1
         time.sleep(1)
-        print("  ", end="\r")
+        print(str(i), end="\r")
 
     psu.write(":OUTP OFF")
 
-    print("Magnet OFF")
-
-def bla():
-    print("toggle on for 0.5 seconds, then wait 6 seconds")
+def continuous(randomize):
+    if randomize == 0:
+        print("Toggle on for 0.5 seconds, then wait " + str(magnet_delay) + " seconds")
+    else:
+        print("Random")
     iteration = 0
     psu.write(":OUTP OFF")
-    while run_number == -1:
+    while iteration < ( run_number * 2 ) :
         iteration += 1
         psu.write(":OUTP ON")
-        #a = random.randint(200, 500)
         a = 500
+        if randomize != 0:
+            a = random.randint(200, 500)
         f = a/1000
         time.sleep(f)
         psu.write(":OUTP OFF")
-        #b = random.randint(1, 6)
-        b = 6
-
+        b = magnet_delay
+        if randomize != 0:
+            b = random.randint(1, 6)
+        # Print first, otherwise miss by 1
+        now = datetime.now()
+        print(now.strftime("%H:%M:%S") + " " + str(iteration).zfill(4) + " : button press of " + "{:1.3f}".format(f) + " milliseconds and delay of " +str(b) + " seconds")
         time.sleep(b)
-
-        print(str(iteration).zfill(4) + " : button press of " + "{:1.3f}".format(f) + " milliseconds and delay of " +str(b) + " seconds")
-
-def random_bla():
-    print("Random")
-    iteration = 0
-    psu.write(":OUTP OFF")
-    while run_number == -1:
-        iteration += 1
-        psu.write(":OUTP ON")
-        a = random.randint(200, 500)
-        f = a/1000
-        time.sleep(f)
-        psu.write(":OUTP OFF")
-        b = random.randint(1, 6)
-
-        time.sleep(b)
-
-        print(str(iteration).zfill(4) + " : button press of " + "{:1.3f}".format(f) + " milliseconds and delay of " +str(b) + " seconds")
 
 def open_psu():
     # visa.log_to_screen()
@@ -118,12 +104,13 @@ def print_help():
     print("mode: 0 - toggle")
     print("mode: 1 - button for 1 seconds")
     print("mode: 2 - button for 6 seconds ")
-    print("mode: 3 - press button for 0.5 seconds then wait for 6 seconds")
+    print("mode: 3 - press button for 0.5 seconds then wait for [magnet_delay] seconds")
     print("mode: 4 - random button press of 200-500 milli seconds then wait for 1-6 seconds, ")
     sys.exit(0)
 
+
 n = len(sys.argv)
-print("n = " + str(n))
+#print("n = " + str(n))
 if n > 2:
     print_help()
     sys.exit(0)
@@ -141,9 +128,10 @@ elif n == 2:
         magnet_delay = 6
         psu_press_then_wait()
     elif int(sys.argv[1]) == 3:
-        bla()
+        magnet_delay = 7
+        continuous(0)
     elif int(sys.argv[1]) == 4:
-        random_bla()
+        continuous(1)
 elif n == 1:
     #default, print help
     print_help()
