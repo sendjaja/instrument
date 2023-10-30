@@ -8,7 +8,7 @@ from datetime import datetime
 
 #default
 magnet_delay = 0
-run_number = 3600
+run_number = 72000
 
 def signal_handler(sig, frame):
     print("Ctrl+C is pressed, turning off PSU")
@@ -78,22 +78,25 @@ def continuous(randomize):
 
 def open_psu():
     # visa.log_to_screen()
-    rm = pyvisa.ResourceManager('@py')
+    # rm = pyvisa.ResourceManager('@py')
     # rm = visa.ResourceManager('C:\Program Files\IVI Foundation\IVI\Lib_x64\msc')
+    rm = pyvisa.ResourceManager('C:\\windows\\system32\\visa32.dll')
     print(rm)
     res = rm.list_resources()
     print("Found following resources: ")
     print(res)
 
     # print("Opening " + res[-1])
-    psu = rm.open_resource("ASRL/dev/ttyS13::INSTR")
+    #psu = rm.open_resource("ASRL/dev/ttyS1::INSTR")
+#
+    #psu.baud_rate = 9600
+    #psu.data_bits = 8
+    #psu.write_termination="\n"
+    #psu.read_termination="\n"
+    ## psu.send_end=1
+    #psu.timeout = 2500 # timeout 2.5s
 
-    psu.baud_rate = 9600
-    psu.data_bits = 8
-    psu.write_termination="\n"
-    psu.read_termination="\n"
-    # psu.send_end=1
-    psu.timeout = 2500 # timeout 2.5s
+    psu = rm.open_resource('USB0::0x05E6::0x2280::4441344::INSTR')
 
     print(psu.query('*IDN?'))
 
@@ -105,7 +108,7 @@ def print_help():
     print("mode: 1 - button for 1 seconds")
     print("mode: 2 - button for 6 seconds ")
     print("mode: 3 - press button for 0.5 seconds then wait for [magnet_delay] seconds")
-    print("mode: 4 - random button press of 200-500 milli seconds then wait for 1-6 seconds, ")
+    print("mode: 4 - random button press of 200-500 milli seconds then wait for random 1-6 seconds, ")
     sys.exit(0)
 
 
