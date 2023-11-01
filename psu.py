@@ -1,14 +1,26 @@
 #!/usr/bin/env python
-import pyvisa
+import pyvisa as visa
 import time
 import sys
-import random
 import signal
 from datetime import datetime
+import random
 
-#default
+### DEBUG
+#from visa import log_to_screen
+#from pyvisa.ctwrapper.highlevel import NIVisaLibrary
+#log_to_screen()
+#NIVisaLibrary.get_library_paths()
+#pyvisa.log_to_screen()
+
+#default setting for this file
 magnet_delay = 0
 run_number = 72000
+
+def timenow():
+    now = datetime.now()
+    dt_string = now.strftime("%m/%d/%Y %H:%M:%S")
+    return dt_string
 
 def signal_handler(sig, frame):
     print("Ctrl+C is pressed, turning off PSU")
@@ -16,6 +28,39 @@ def signal_handler(sig, frame):
     sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
+
+def openVisaResourceManager():
+    # visa.log_to_screen()
+    # rm = pyvisa.ResourceManager('@py')
+    # rm = visa.ResourceManager('C:\Program Files\IVI Foundation\IVI\Lib_x64\msc')
+    rm = visa.ResourceManager('C:\\windows\\system32\\visa64.dll')
+    print(rm)
+    res = rm.list_resources()
+    print("Found following resources: ")
+    print(res)
+
+    return rm
+    
+def open_psu():
+    rm = openVisaResourceManager()
+
+    # print("Opening " + res[-1])
+    #SERIAL
+    #psu = rm.open_resource("ASRL/dev/ttyS1::INSTR")
+    #psu.baud_rate = 9600
+    #psu.data_bits = 8
+    #psu.write_termination="\n"
+    #psu.read_termination="\n"
+    ## psu.send_end=1
+    #psu.timeout = 2500 # timeout 2.5s
+
+    #USB
+    # This might change, especially the "4441344"
+    psu = rm.open_resource('USB0::0x05E6::0x2280::4441344::INSTR')
+
+    print(psu.query('*IDN?'))
+
+    return psu
 
 def psu_set_volt_and_curr():
     # CAREFUL, MAGNET IS 12V OUTPUT for IPG
@@ -65,42 +110,17 @@ def continuous(randomize):
         a = 500
         if randomize != 0:
             a = random.randint(200, 500)
-        f = a/1000
+            f = a/1000
         time.sleep(f)
         psu.write(":OUTP OFF")
         b = magnet_delay
         if randomize != 0:
-            b = random.randint(1, 6)
+            b = random.randint(1000, 6000)
+            g = b/1000
         # Print first, otherwise miss by 1
         now = datetime.now()
-        print(now.strftime("%H:%M:%S") + " " + str(iteration).zfill(4) + " : button press of " + "{:1.3f}".format(f) + " milliseconds and delay of " +str(b) + " seconds")
-        time.sleep(b)
-
-def open_psu():
-    # visa.log_to_screen()
-    # rm = pyvisa.ResourceManager('@py')
-    # rm = visa.ResourceManager('C:\Program Files\IVI Foundation\IVI\Lib_x64\msc')
-    rm = pyvisa.ResourceManager('C:\\windows\\system32\\visa32.dll')
-    print(rm)
-    res = rm.list_resources()
-    print("Found following resources: ")
-    print(res)
-
-    # print("Opening " + res[-1])
-    #psu = rm.open_resource("ASRL/dev/ttyS1::INSTR")
-#
-    #psu.baud_rate = 9600
-    #psu.data_bits = 8
-    #psu.write_termination="\n"
-    #psu.read_termination="\n"
-    ## psu.send_end=1
-    #psu.timeout = 2500 # timeout 2.5s
-
-    psu = rm.open_resource('USB0::0x05E6::0x2280::4441344::INSTR')
-
-    print(psu.query('*IDN?'))
-
-    return psu
+        print(timenow() + " " + str(iteration).zfill(4) + " : button press of " + "{:1.3f}".format(f) + " ms and delay of " + "{:1.3f}".format(g) + " ms")
+        time.sleep(g)
 
 def print_help():
     print("usage: psu.py [mode] ")
@@ -111,7 +131,7 @@ def print_help():
     print("mode: 4 - random button press of 200-500 milli seconds then wait for random 1-6 seconds, ")
     sys.exit(0)
 
-
+# START HERE
 n = len(sys.argv)
 #print("n = " + str(n))
 if n > 2:

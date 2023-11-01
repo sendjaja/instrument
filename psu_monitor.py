@@ -2,8 +2,8 @@
 import pyvisa as visa
 import time
 import sys
+import signal
 from datetime import datetime
-import re
 
 ### DEBUG
 #from visa import log_to_screen
@@ -12,12 +12,58 @@ import re
 #NIVisaLibrary.get_library_paths()
 #pyvisa.log_to_screen()
 
-curr_limit = 40 #mA
+#default setting for this file
+curr_limit = 80 #mA
 sleep_time = 1
 
-#curr = psu.query(':MEAS:CURR?')
-#print(curr)
+def timenow():
+    now = datetime.now()
+    dt_string = now.strftime("%m/%d/%Y %H:%M:%S")
+    return dt_string
 
+def signal_handler(sig, frame):
+    #print("Ctrl+C is pressed, turning off PSU")
+    #psu.write(":OUTP OFF")
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+def openVisaResourceManager():
+    # visa.log_to_screen()
+    # rm = pyvisa.ResourceManager('@py')
+    # rm = visa.ResourceManager('C:\Program Files\IVI Foundation\IVI\Lib_x64\msc')
+    rm = visa.ResourceManager('C:\\windows\\system32\\visa64.dll')
+    print(rm)
+    res = rm.list_resources()
+    print("Found following resources: ")
+    print(res)
+
+    return rm
+
+def open_psu():
+    rm = openVisaResourceManager()
+
+    # print("Opening " + res[-1])
+    #SERIAL
+    #psu = rm.open_resource("ASRL/dev/ttyS1::INSTR")
+    #psu.baud_rate = 9600
+    #psu.data_bits = 8
+    #psu.write_termination="\n"
+    #psu.read_termination="\n"
+    ## psu.send_end=1
+    #psu.timeout = 2500 # timeout 2.5s
+    
+    #USB
+    #psu = rm.open_resource('USB0::0x05E6::0x2280::4441344::INSTR')
+
+    #GPIB
+    psu = rm.open_resource("GPIB0::5::INSTR")
+    
+    # Get ID
+    print(psu.query('*IDN?'))
+
+    return psu
+    
 def getCurr(psu):
     value = psu.query(':MEAS:CURR?')
     
@@ -30,18 +76,8 @@ def getCurr(psu):
     #psu.write('*CLS')
     return f
 
-def timenow():
-    now = datetime.now()
-    dt_string = now.strftime("%m/%d/%Y %H:%M:%S")
-    return dt_string
-
-# rm = visa.ResourceManager('@py')
-rm = visa.ResourceManager('/cygdrive/c/Windows/System32/visa64.dll')
-#print(rm)
-
-psu = rm.open_resource("GPIB0::5::INSTR")
-print(psu.query('*IDN?'))
-
+# START HERE
+psu = open_psu()
 
 count = 0
 measure_count = 0
