@@ -32,7 +32,8 @@ signal.signal(signal.SIGINT, signal_handler)
 def openVisaResourceManager():
     # visa.log_to_screen()
     # rm = pyvisa.ResourceManager('@py')
-    # rm = visa.ResourceManager('C:\Program Files\IVI Foundation\IVI\Lib_x64\msc')
+    # rm = visa.ResourceManager
+    #   ('C:\Program Files\IVI Foundation\VISA\Win64\Lib_x64\msc\visa64.lib')
     rm = visa.ResourceManager('C:\\windows\\system32\\visa64.dll')
     print(rm)
     res = rm.list_resources()
@@ -99,7 +100,8 @@ def psu_press_then_wait():
 
 def continuous(randomize):
     if randomize == 0:
-        print("Toggle on for 0.5 seconds, then wait " + str(magnet_delay) + " seconds")
+        print("Toggle on for 0.5 seconds, then wait " + 
+              str(magnet_delay) + " seconds")
     else:
         print("Random")
     iteration = 0
@@ -119,7 +121,9 @@ def continuous(randomize):
             g = b/1000
         # Print first, otherwise miss by 1
         now = datetime.now()
-        print(timenow() + " " + str(iteration).zfill(4) + " : button press of " + "{:1.3f}".format(f) + " ms and delay of " + "{:1.3f}".format(g) + " ms")
+        print(timenow() + " " + str(iteration).zfill(4) + 
+              " : button press of " + "{:1.3f}".format(f) + 
+              " ms and delay of " + "{:1.3f}".format(g) + " ms")
         time.sleep(g)
 
 def print_help():
@@ -127,8 +131,10 @@ def print_help():
     print("mode: 0 - toggle")
     print("mode: 1 - button for 1 seconds")
     print("mode: 2 - button for 6 seconds ")
-    print("mode: 3 - press button for 0.5 seconds then wait for [magnet_delay] seconds")
-    print("mode: 4 - random button press of 200-500 milli seconds then wait for random 1-6 seconds, ")
+    print("mode: 3 - press button for 0.5 seconds then wait for \
+          [magnet_delay] seconds")
+    print("mode: 4 - random button press of 200-500 milli seconds \
+          then wait for random 1-6 seconds, ")
     sys.exit(0)
 
 # START HERE
