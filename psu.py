@@ -83,14 +83,14 @@ def psu_press_then_wait():
     psu.write(":OUTP OFF")
 
     ### This is for Charger
-    i = magnet_delay
+    i = magnet_delay/1000
 
     psu.write(":OUTP ON")
 
     while True:
         print(i, end="\r")
 
-        if i == 0:
+        if i <= 0:
             break
         i = i - 1
         time.sleep(1)
