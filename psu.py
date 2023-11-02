@@ -99,9 +99,12 @@ def psu_press_then_wait():
     psu.write(":OUTP OFF")
 
 def continuous(randomize):
+    a = 500
+    b = magnet_delay
+    
     if randomize == 0:
-        print("Toggle on for 0.5 seconds, then wait " + 
-              str(magnet_delay) + " seconds")
+        print("Toggle on for " + "{:1.3f}".format(a/1000) + " seconds, then wait " + 
+              "{:1.3f}".format(magnet_delay/1000) + " seconds")
     else:
         print("Random")
     iteration = 0
@@ -109,21 +112,21 @@ def continuous(randomize):
     while iteration < ( run_number * 2 ) :
         iteration += 1
         psu.write(":OUTP ON")
-        a = 500
+        
         if randomize != 0:
             a = random.randint(200, 500)
-            f = a/1000
+        f = a/1000
         time.sleep(f)
         psu.write(":OUTP OFF")
-        b = magnet_delay
+        
         if randomize != 0:
             b = random.randint(1000, 6000)
-            g = b/1000
+        g = b/1000
         # Print first, otherwise miss by 1
         now = datetime.now()
         print(timenow() + " " + str(iteration).zfill(4) + 
               " : button press of " + "{:1.3f}".format(f) + 
-              " ms and delay of " + "{:1.3f}".format(g) + " ms")
+              " s and delay of " + "{:1.3f}".format(g) + " s")
         time.sleep(g)
 
 def print_help():
@@ -151,13 +154,13 @@ elif n == 2:
     if int(sys.argv[1]) == 0:
         psu_toggle()
     elif int(sys.argv[1]) == 1:
-        magnet_delay = 1
+        magnet_delay = 1000
         psu_press_then_wait()
     elif int(sys.argv[1]) == 2:
-        magnet_delay = 6
+        magnet_delay = 6000
         psu_press_then_wait()
     elif int(sys.argv[1]) == 3:
-        magnet_delay = 7
+        magnet_delay = 7000
         continuous(0)
     elif int(sys.argv[1]) == 4:
         continuous(1)
