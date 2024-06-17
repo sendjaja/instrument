@@ -24,7 +24,7 @@ magnet_delay = 0
 run_number = 72000
 
 # Voltage to set
-output_volt = 4.0
+output_volt = 3.81
 
 # Current to set
 output_current = 0.1
@@ -94,10 +94,10 @@ def open_psu():
 
     # USB
     # This might change, especially the "4441344"
-    psu = rm.open_resource('USB0::0x05E6::0x2280::4427814::INSTR')
+    # psu = rm.open_resource('USB0::0x05E6::0x2280::4427814::INSTR')
 
     # GPIB
-    #psu = rm.open_resource("GPIB0::5::INSTR")
+    psu = rm.open_resource("GPIB0::5::INSTR")
 
     # Get ID
     if bool(__debug__):     
@@ -107,8 +107,8 @@ def open_psu():
 
 def psu_set_volt_and_curr():
     # CAREFUL, MAGNET IS 12V OUTPUT for IPG
-    volt = ":VOLT " + "{:1.1f}".format(output_volt)
-    curr = ":CURR " + "{:1.1f}".format(output_current)
+    volt = ":VOLT " + "{:1.2f}".format(output_volt)
+    curr = ":CURR " + "{:1.2f}".format(output_current)
     psu.write(volt)
     psu.write(curr)
 
